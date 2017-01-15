@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import './App.css';
-import fs from 'fs';
 
 class App extends Component {
   constructor() {
@@ -11,12 +11,14 @@ class App extends Component {
   }
 
   _getCards() {
-    fs.readdir('../public/images/cards/', (err, cards) => {
-      cards.forEach(card => {
-        console.log(card);
-      });
-      this.setState({ cards });
-    })
+    axios.get('../public/images/cards/2C.png')
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });     
+    // this.setState({ cards });
   }
 
   componentDidMount() {
