@@ -8,7 +8,7 @@ class App extends Component {
       deck: [],
       playerCount: 1,
       player1: [],
-      score: 0
+      handValue: 0
     }
   }
 
@@ -42,7 +42,7 @@ class App extends Component {
     }
     console.log(deck);
     let player1= [deck.pop(), deck.pop()];
-    this.setState({ deck, player1 }, () => console.log(this.state.player1));
+    this.setState({ deck, player1 }, () => this._renderPlayerHand());
   }
 
   // "HIT ME"
@@ -52,7 +52,8 @@ class App extends Component {
     let newCard = deck.pop();
     player1.push(newCard);
     this.setState({player1, deck},() => {
-      console.log(this.state.player1, this.state.deck)
+      console.log(this.state.player1, this.state.deck);
+      this._renderPlayerHand();
     })
   }
 
@@ -64,18 +65,19 @@ class App extends Component {
   _renderPlayerHand() {
     let p1 = this.state.player1
     let hand = [];
-    let score = this.state.score;
+    let handValue = 0;
     for (var i = 0; i < p1.length; i++) {
-      // the deck array matches the filename. Suits are irrelevent so value only needs first character.
+      // the deck array matches the image filenames.
       let value = this._getCardValue(p1[i]);
-      score += value;
-      hand.push(<img key={i} value={value} src={require(`../public/images/cards/${p1[i]}.png`)} role="presentation" />)
+      handValue += value;
+      hand.push(<img key={i} value={value} src={require(`../public/images/cards/${p1[i]}.png`)} alt={p1[i]} />)
     }
-    console.log(score);
-    return hand;
+    console.log(handValue);
+    this.setState({ hand, handValue });
   }
 
   _getCardValue(cardValue) {
+    // Suits are irrelevent so value only needs first character (except 10)
     if (cardValue[0] + cardValue[1] !== "10") {
       cardValue = cardValue[0]
     }
@@ -90,6 +92,7 @@ class App extends Component {
 
   _calculateScore () {
     // Need to figure out how to add card values and save to state
+    console.log(this.refs.p1);
   }
 
   // build the shuffled deck on app start
@@ -99,18 +102,18 @@ class App extends Component {
 
   // Currently will render 3 random cards
   render() {
-    let hand = this._renderPlayerHand();
-
     return (
       <div className="App">
         <div className="App-header">
           <h2>Blackjack Baby</h2>
         </div>
-        <div ref="p1" className="Player1">
-          {hand}
-        </div>
         <button onClick={() => this._handleHit()}>Hit</button>
         <button onClick={() => this._handleStay()}>Stay</button>
+        <h4>Total Value: {this.state.handValue}</h4>
+        <div ref="p1" className="Player1">
+          {this.state.hand}
+        </div>
+
       </div>
     );
   }
