@@ -68,9 +68,9 @@ class App extends Component {
     let hand = [];
     let handValue = 0;
     for (var i = 0; i < p1.length; i++) {
-      // the deck array matches the image filenames.
       let value = this._getCardValue(p1[i], handValue);
       handValue += value;
+      // the deck array values match the image filenames
       hand.push(<img key={i} value={value} src={require(`../public/images/cards/${p1[i]}.png`)} alt={p1[i]} />)
     }
     console.log(handValue);
@@ -78,25 +78,29 @@ class App extends Component {
   }
 
   _getCardValue(cardValue, handValue) {
-    // Suits are irrelevent so value only needs first character (except 10)
+    // Suits are irrelevent so value only needs the first character (except 10)
     if (cardValue[0] + cardValue[1] !== "10") {
       cardValue = cardValue[0];
+    } else {
+      return +(cardValue[0] + cardValue[1]);
     }
-
+    // Ace Logic
     if (cardValue === "A") {
       cardValue = 11;
       if (handValue + cardValue > 21) {
         return cardValue = 1;
       } else {
-        this.setState({ ace: true });
         return cardValue;
       }
-    } else if (cardValue.match(/[A-Z]/)) {
+    // Handles Facecards
+    } else if (cardValue.match(/[QKJ]/)) {
       return 10;
+    // Return all other number Cards
     } else {
       return +cardValue;
     }
   }
+
   // build the shuffled deck on app start
   componentWillMount() {
     this._buildDeck();
