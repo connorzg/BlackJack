@@ -1,10 +1,6 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px;
+  height: 100%;
 }
 
 .App-header {
@@ -20,4 +16,17 @@
 .Player1 img {
   width: 150px;
   margin: 5px;
+}
+
+.Board {
+  background-image: url('../public/images/felt.jpg');
+  height: 100vh;
+}
+
+.Status {
+  color: white;
+}
+
+button {
+  margin: 20px;
 }

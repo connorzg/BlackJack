@@ -6,8 +6,9 @@ class App extends Component {
     super();
     this.state = {
       deck: [],
-      playerCount: 1,
       player1: [],
+      ace: false,
+      money: 2500,
       handValue: 0
     }
   }
@@ -63,12 +64,12 @@ class App extends Component {
 
   // Dynamically render the cards in a player's hand
   _renderPlayerHand() {
-    let p1 = this.state.player1
+    let p1 = this.state.player1;
     let hand = [];
     let handValue = 0;
     for (var i = 0; i < p1.length; i++) {
       // the deck array matches the image filenames.
-      let value = this._getCardValue(p1[i]);
+      let value = this._getCardValue(p1[i], handValue);
       handValue += value;
       hand.push(<img key={i} value={value} src={require(`../public/images/cards/${p1[i]}.png`)} alt={p1[i]} />)
     }
@@ -76,25 +77,26 @@ class App extends Component {
     this.setState({ hand, handValue });
   }
 
-  _getCardValue(cardValue) {
+  _getCardValue(cardValue, handValue) {
     // Suits are irrelevent so value only needs first character (except 10)
     if (cardValue[0] + cardValue[1] !== "10") {
-      cardValue = cardValue[0]
+      cardValue = cardValue[0];
     }
 
-    if (cardValue.match(/[A-Z]/)) {
-      // TODO Ace logic
-      return 10
+    if (cardValue === "A") {
+      cardValue = 11;
+      if (handValue + cardValue > 21) {
+        return cardValue = 1;
+      } else {
+        this.setState({ ace: true });
+        return cardValue;
+      }
+    } else if (cardValue.match(/[A-Z]/)) {
+      return 10;
     } else {
-      return +cardValue
+      return +cardValue;
     }
   }
-
-  _calculateScore () {
-    // Need to figure out how to add card values and save to state
-    console.log(this.refs.p1);
-  }
-
   // build the shuffled deck on app start
   componentWillMount() {
     this._buildDeck();
@@ -107,11 +109,15 @@ class App extends Component {
         <div className="App-header">
           <h2>Blackjack Baby</h2>
         </div>
-        <button onClick={() => this._handleHit()}>Hit</button>
-        <button onClick={() => this._handleStay()}>Stay</button>
-        <h4>Total Value: {this.state.handValue}</h4>
-        <div ref="p1" className="Player1">
-          {this.state.hand}
+        <div className="Board">
+          <button onClick={() => this._handleHit()}>Hit</button>
+          <button onClick={() => this._handleStay()}>Stay</button>
+          <h4 className="Status">Total Value: {this.state.handValue}</h4>
+          <h4 className="Status">Money: {this.state.money}</h4>
+
+          <div ref="p1" className="Player1">
+            {this.state.hand}
+          </div>
         </div>
 
       </div>
