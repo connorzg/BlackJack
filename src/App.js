@@ -64,12 +64,26 @@ class App extends Component {
     this.setState({player1, deck},() => {
       console.log(this.state.player1, this.state.deck);
       this._renderPlayerHand();
+    })
+  }
+
+  _handleDealerHit() {
+    let deck = this.state.deck;
+    let dealer = this.state.dealer;
+    let newCard = deck.pop();
+    dealer.push(newCard);
+    this.setState({dealer, deck}, () => {
+      console.log(this.state.dealer, this.state.deck);
       this._renderDealerHand();
     })
   }
 
   _handleStay() {
     // TODO when math incorporated
+    let dealerHandValue = this.state.dealerHandValue;
+    if (dealerHandValue < 17) {
+      this._handleDealerHit();
+    }
   }
 
   // Dynamically render the cards in a player's hand
@@ -94,14 +108,14 @@ class App extends Component {
   _renderDealerHand() {
     let dealer = this.state.dealer;
     let dealerHand = [];
-    let dealerHandValue = this.state.dealerHandValue;
+    let dealerHandValue = 0;
     for (var i = 0; i < dealer.length; i++) {
       let value = this._getCardValue(dealer[i], dealerHandValue);
       dealerHandValue += value;
       dealerHand.push(<img key={i} value={value} src={require(`../public/images/cards/${dealer[i]}.png`)} alt={dealer[i]} />)
     }
     console.log(dealerHandValue, dealer);
-    this.setState({ dealerHand });
+    this.setState({ dealerHand, dealerHandValue });
 
   }
 
