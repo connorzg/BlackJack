@@ -43,6 +43,7 @@ class App extends Component {
     }
     console.log(deck);
     let player1= [deck.pop(), deck.pop()];
+    console.log(player1);
     this.setState({ deck, player1 }, () => this._renderPlayerHand());
   }
 
@@ -105,6 +106,13 @@ class App extends Component {
     }
   }
 
+  // Reset the game after player/dealer busts or deal is won/lost
+  resetGame() {
+    if (this.state.bust) {
+      this._buildDeck();
+    }
+  }
+
   // build the shuffled deck on app start
   componentWillMount() {
     this._buildDeck();
@@ -130,6 +138,7 @@ class App extends Component {
         <div className="Board">
           <button onClick={() => this._handleHit()}>Hit</button>
           <button onClick={() => this._handleStay()}>Stay</button>
+          <button onClick={() => this.resetGame()}>Play Again?</button>
           <h4 className="Status">Total Value: {this.state.handValue}</h4>
           <h4 className="Status">Money: {this.state.money}</h4>
 
