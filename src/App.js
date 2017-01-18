@@ -7,9 +7,13 @@ class App extends Component {
     this.state = {
       deck: [],
       player1: [],
+      hand: [],
+      dealer: [],
+      dealerHand: [],
       bust: false,
       money: 2500,
-      handValue: 0
+      handValue: 0,
+      dealerHandValue: 0
     }
   }
 
@@ -43,8 +47,12 @@ class App extends Component {
     }
     console.log(deck);
     let player1= [deck.pop(), deck.pop()];
+    let dealer = [deck.pop(), deck.pop()];
     console.log(player1);
-    this.setState({ deck, player1 }, () => this._renderPlayerHand());
+    this.setState({ deck, player1, dealer }, () => {
+      this._renderPlayerHand();
+      this._renderDealerHand();
+    })
   }
 
   // "HIT ME"
@@ -56,6 +64,7 @@ class App extends Component {
     this.setState({player1, deck},() => {
       console.log(this.state.player1, this.state.deck);
       this._renderPlayerHand();
+      this._renderDealerHand();
     })
   }
 
@@ -80,6 +89,20 @@ class App extends Component {
       this.setState({ bust: true });
     }
     this.setState({ hand, handValue });
+  }
+
+  _renderDealerHand() {
+    let dealer = this.state.dealer;
+    let dealerHand = [];
+    let dealerHandValue = this.state.dealerHandValue;
+    for (var i = 0; i < dealer.length; i++) {
+      let value = this._getCardValue(dealer[i], dealerHandValue);
+      dealerHandValue += value;
+      dealerHand.push(<img key={i} value={value} src={require(`../public/images/cards/${dealer[i]}.png`)} alt={dealer[i]} />)
+    }
+    console.log(dealerHandValue, dealer);
+    this.setState({ dealerHand });
+
   }
 
   _getCardValue(cardValue, handValue) {
@@ -145,6 +168,9 @@ class App extends Component {
           <div ref="p1" className="Player1">
             {roundOver}
             {this.state.hand}
+          </div>
+          <div>
+            {this.state.dealerHand}
           </div>
         </div>
 

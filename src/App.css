@@ -16,11 +16,17 @@
 .App-intro {
   font-size: large;
 }
-
+/*
 .Player1 img {
   width: 150px;
   margin: 5px;
+}*/
+
+img {
+  width: 150px;
+  margin: 5px;
 }
+
 
 .Board {
   background-image: url('../public/images/felt.jpg');
