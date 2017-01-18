@@ -11,6 +11,7 @@ class App extends Component {
       dealer: [],
       dealerHand: [],
       bust: false,
+      dealerBust: false,
       money: 2500,
       handValue: 0,
       dealerHandValue: 0
@@ -81,9 +82,10 @@ class App extends Component {
   _handleStay() {
     // TODO when math incorporated
     let dealerHandValue = this.state.dealerHandValue;
-    if (dealerHandValue < 17) {
+    while (dealerHandValue < 17) {
       this._handleDealerHit();
     }
+    this._determineWinner();
   }
 
   // Dynamically render the cards in a player's hand
@@ -101,6 +103,7 @@ class App extends Component {
     if (handValue > 21) {
       console.log("BUST");
       this.setState({ bust: true });
+      this._handleDealerHit();
     }
     this.setState({ hand, handValue });
   }
@@ -115,6 +118,10 @@ class App extends Component {
       dealerHand.push(<img key={i} value={value} src={require(`../public/images/cards/${dealer[i]}.png`)} alt={dealer[i]} />)
     }
     console.log(dealerHandValue, dealer);
+    if (dealerHandValue > 21) {
+      console.log("BUST");
+      this.setState({ dealerBust: true });
+    }
     this.setState({ dealerHand, dealerHandValue });
 
   }
@@ -143,6 +150,21 @@ class App extends Component {
     }
   }
 
+  _determineWinner() {
+    let dealerHandValue = this.state.dealerHandValue;
+    let handValue = this.state.handValue;
+
+    if ((dealerHandValue > handValue) && !this.state.dealerBust) {
+      console.log('Dealer wins');
+    } else if (this.state.bust) {
+      console.log('Dealer Wins');
+    } else if (handValue === dealerHandValue) {
+      console.log('Tie')
+    } else if (!this.state.bust) {
+      console.log('You win')
+    }
+  }
+
   // Reset the game after player/dealer busts or deal is won/lost
   resetGame() {
     if (this.state.bust) {
@@ -153,6 +175,10 @@ class App extends Component {
   // build the shuffled deck on app start
   componentWillMount() {
     this._buildDeck();
+  }
+
+  componentWillUpdate() {
+
   }
 
   // Currently will render 3 random cards
