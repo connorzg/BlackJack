@@ -7,7 +7,7 @@ class App extends Component {
     this.state = {
       deck: [],
       player1: [],
-      ace: false,
+      bust: false,
       money: 2500,
       handValue: 0
     }
@@ -74,6 +74,10 @@ class App extends Component {
       hand.push(<img key={i} value={value} src={require(`../public/images/cards/${p1[i]}.png`)} alt={p1[i]} />)
     }
     console.log(handValue);
+    if (handValue > 21) {
+      console.log("BUST");
+      this.setState({ bust: true });
+    }
     this.setState({ hand, handValue });
   }
 
@@ -108,6 +112,16 @@ class App extends Component {
 
   // Currently will render 3 random cards
   render() {
+    let roundOver;
+
+    if (this.state.bust) {
+      roundOver = <h1>BUST</h1>
+    }
+
+    if (this.state.handValue === 21) {
+      roundOver = <h1>BLACKJACK</h1>
+    }
+
     return (
       <div className="App">
         <div className="App-header">
@@ -120,6 +134,7 @@ class App extends Component {
           <h4 className="Status">Money: {this.state.money}</h4>
 
           <div ref="p1" className="Player1">
+            {roundOver}
             {this.state.hand}
           </div>
         </div>
